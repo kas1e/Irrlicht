@@ -79,6 +79,8 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	SDL_putenv("SDL_VIDEODRIVER=directx");
 #elif defined(_IRR_OSX_PLATFORM_)
 	SDL_putenv("SDL_VIDEODRIVER=Quartz");
+#elif defined(__amigaos4__)
+	SDL_putenv("SDL_VIDEODRIVER=OS4");
 #else
 	SDL_putenv("SDL_VIDEODRIVER=x11");
 #endif
