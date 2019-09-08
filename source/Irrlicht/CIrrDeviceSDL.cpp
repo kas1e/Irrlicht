@@ -766,7 +766,7 @@ void CIrrDeviceSDL::restoreWindow()
 //! returns if window is active. if not, nothing need to be drawn
 bool CIrrDeviceSDL::isWindowActive() const
 {
-	return (WindowHasFocus && !WindowMinimized);
+	return (SDL_GetAppState()&SDL_APPACTIVE) ? true : false;
 }
 
 
