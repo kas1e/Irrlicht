@@ -1,0 +1,40 @@
+# Makefile for Irrlicht Examples
+# It's usually sufficient to change just the target name and source file list
+# and be sure that CXX is set to a valid compiler
+Target = 22.MaterialViewer
+Sources = main.cpp
+BinPath = ../../bin/AmigaOS4
+
+# general compiler settings
+CXX = ppc-amigaos-g++
+CPPFLAGS = -I../../include
+CXXFLAGS = -O3 -ffast-math
+#CXXFLAGS = -gstabs -Wall
+
+# by default we build for SDL1 , if do "make -f Makefile.amigaos4 SDL2=1", it will build with SDL2.
+ifndef SDL2
+SDLLIB = -lSDL_gl4es
+else
+SDLLIB = -lSDL2_gl4es
+endif
+
+LDFLAGS = -athread=native ../../lib/AmigaOS4/libIrrlicht.a $(SDLLIB) -lgl4es -lpthread -lunix
+
+# name of the binary
+DESTPATH = $(BinPath)/$(Target)
+
+all:
+	$(warning Building...)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(Sources) -o $(DESTPATH) $(LDFLAGS)
+	ppc-amigaos-strip $(DESTPATH)
+
+clean:
+	$(warning Cleaning...)	
+ifneq ($(shell uname), AmigaOS)
+	rm -rf $(DESTPATH)
+else
+	delete //bin/AmigaOS4/$(Target)
+endif
+
+
+.PHONY: all clean
