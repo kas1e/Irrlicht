@@ -37,6 +37,9 @@
 */
 
 #include <memory.h>
+#ifdef __amigaos4__
+#include <string.h>
+#endif
 
 #include "fileenc.h"
 

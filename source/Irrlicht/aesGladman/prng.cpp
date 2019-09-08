@@ -39,6 +39,9 @@
 */
 
 #include <memory.h>
+#ifdef __amigaos4__
+#include <string.h>
+#endif
 #include "prng.h"
 
 /* mix a random data pool using the SHA1 compression function (as   */

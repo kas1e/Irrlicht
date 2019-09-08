@@ -35,6 +35,9 @@
 */
 
 #include <memory.h>
+#ifdef __amigaos4__
+#include <string.h>
+#endif
 #include "hmac.h"
 
 void derive_key(const unsigned char pwd[],  /* the PASSWORD     */

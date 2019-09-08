@@ -34,7 +34,9 @@
  This is an implementation of HMAC, the FIPS standard keyed hash function
 */
 
-
+#ifdef __amigaos4__
+#include <string.h>
+#endif
 #include "hmac.h"
 
 #define HMAC_IPAD (0x36 * (((unsigned long)-1) / 0xff))
