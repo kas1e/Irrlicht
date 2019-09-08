@@ -10,6 +10,10 @@
 #include "IGUISkin.h"
 #include "IGUIEnvironment.h"
 
+#ifdef __amigaos4__
+#include <unistd.h>
+#endif
+
 // to close the device on terminate signal
 irr::CIrrDeviceConsole *DeviceToClose;
 
@@ -317,6 +321,8 @@ void CIrrDeviceConsole::yield()
 {
 #ifdef _IRR_WINDOWS_API_
 	Sleep(1);
+#elif defined(__amigaos4__)
+	usleep(1);	
 #else
 	struct timespec ts = {0,0};
 	nanosleep(&ts, NULL);
@@ -330,6 +336,8 @@ void CIrrDeviceConsole::sleep(u32 timeMs, bool pauseTimer)
 
 #ifdef _IRR_WINDOWS_API_
 	Sleep(timeMs);
+#elif defined(__amigaos4__)
+	usleep(timeMs);
 #else
 	struct timespec ts;
 	ts.tv_sec = (time_t) (timeMs / 1000);
