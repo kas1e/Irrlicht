@@ -34,9 +34,11 @@
  a password and a salt value.
 */
 
-#include <memory.h>
+
 #ifdef __amigaos4__
 #include <string.h>
+#else
+#include <memory.h>
 #endif
 #include "hmac.h"
 

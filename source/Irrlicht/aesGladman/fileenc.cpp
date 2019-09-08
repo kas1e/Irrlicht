@@ -36,11 +36,11 @@
 
 */
 
-#include <memory.h>
 #ifdef __amigaos4__
 #include <string.h>
+#else
+#include <memory.h>
 #endif
-
 #include "fileenc.h"
 
 /* subroutine for data encryption/decryption    */

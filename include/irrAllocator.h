@@ -8,7 +8,9 @@
 #include "irrTypes.h"
 #include <new>
 // necessary for older compilers
+#ifndef __amigaos4__
 #include <memory.h>
+#endif
 
 namespace irr
 {

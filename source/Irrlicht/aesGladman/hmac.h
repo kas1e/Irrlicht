@@ -37,7 +37,9 @@
 #ifndef _HMAC_H
 #define _HMAC_H
 
+#ifndef __amigaos4__
 #include <memory.h>
+#endif
 
 #define USE_SHA1	// Irrlicht only cares about SHA1 for now
 #if !defined(USE_SHA1) && !defined(USE_SHA256)
