@@ -400,7 +400,7 @@ bool CIrrDeviceSDL::run()
 				else
 					key = (EKEY_CODE)KeyMap[idx].Win32Key;
 
-#ifdef _IRR_WINDOWS_API_
+#if defined (_IRR_WINDOWS_API_) || defined(__amigaos4__)
 				// handle alt+f4 in Windows, because SDL seems not to
 				if ( (SDL_event.key.keysym.mod & KMOD_LALT) && key == KEY_F4)
 				{
