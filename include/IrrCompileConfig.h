@@ -778,6 +778,25 @@ precision will be lower but speed higher. currently X86 only
 
 #endif
 
+
+#ifdef __amigaos4__
+
+	#undef _IRR_COMPILE_WITH_DIRECT3D_8_
+	#undef _IRR_COMPILE_WITH_DIRECT3D_9_
+	
+	#define _IRR_COMPILE_WITH_OPENGL_
+	#define _IRR_OPENGL_USE_EXTPOINTER_
+	
+	#undef _IRR_COMPILE_WITH_X11_DEVICE_
+	#define _IRR_COMPILE_WITH_SDL_DEVICE_
+	#define _IRR_COMPILE_WITH_JOYSTICK_EVENTS_
+	
+	#define _IRR_COMPILE_WITH_BURNINGSVIDEO_
+	#define BURNINGVIDEO_RENDERER_BEAUTIFUL
+
+#endif
+
+
 #ifndef _IRR_WINDOWS_API_
 	#undef _IRR_WCHAR_FILESYSTEM
 #endif
