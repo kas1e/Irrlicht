@@ -34,6 +34,10 @@ static const char* const copyright = "Irrlicht Engine (c) 2002-2012 Nikolaus Geb
 #include "CIrrDeviceSDL.h"
 #endif
 
+#ifdef _IRR_COMPILE_WITH_SDL2_DEVICE_
+#include "CIrrDeviceSDL2.h"
+#endif
+
 #ifdef _IRR_COMPILE_WITH_FB_DEVICE_
 #include "CIrrDeviceFB.h"
 #endif
@@ -87,7 +91,7 @@ namespace irr
 			dev = new CIrrDeviceLinux(params);
 #endif
 
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+#if defined (_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL2_DEVICE_)
 		if (params.DeviceType == EIDT_SDL || (!dev && params.DeviceType == EIDT_BEST))
 			dev = new CIrrDeviceSDL(params);
 #endif

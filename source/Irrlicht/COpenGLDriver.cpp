@@ -25,6 +25,7 @@
 #include <SDL/SDL.h>
 #endif
 
+
 namespace irr
 {
 namespace video
