@@ -17,6 +17,7 @@ VERSION_RELEASE = 4
 # make -f Makefile.amigaos4 NDEBUG=1
 #
 
+
 #List of object files, separated based on engine architecture
 IRRMESHLOADER = CBSPMeshFileLoader.o CMD2MeshFileLoader.o CMD3MeshFileLoader.o CMS3DMeshFileLoader.o CB3DMeshFileLoader.o C3DSMeshFileLoader.o COgreMeshFileLoader.o COBJMeshFileLoader.o CColladaFileLoader.o CCSMLoader.o CDMFLoader.o CLMTSMeshFileLoader.o CMY3DMeshFileLoader.o COCTLoader.o CXMeshFileLoader.o CIrrMeshFileLoader.o CSTLMeshFileLoader.o CLWOMeshFileLoader.o CPLYMeshFileLoader.o CSMFMeshFileLoader.o
 IRRMESHWRITER = CColladaMeshWriter.o CIrrMeshWriter.o CSTLMeshWriter.o COBJMeshWriter.o CPLYMeshWriter.o
@@ -58,14 +59,11 @@ AR = ppc-amigaos-ar
 
 CXXINCS = -I../../include -Izlib -Ijpeglib -Ilibpng
 CPPFLAGS += $(CXXINCS) -DIRRLICHT_EXPORTS=1
-CXXFLAGS += -Wall -pipe -fno-exceptions -fno-rtti -fstrict-aliasing
+CXXFLAGS += -Wall -fno-exceptions -fno-rtti -fstrict-aliasing
 ifndef NDEBUG
 CXXFLAGS += -gstabs -D_DEBUG
 else
 CXXFLAGS += -fexpensive-optimizations -O3
-endif
-ifdef PROFILE
-CXXFLAGS += -pg
 endif
 CFLAGS := -O3 -fexpensive-optimizations -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE -DPNG_NO_MNG_FEATURES
 
@@ -73,7 +71,17 @@ CFLAGS := -O3 -fexpensive-optimizations -DPNG_THREAD_UNSAFE_OK -DPNG_NO_MMX_CODE
 #Build specific options
 staticlib  install: SYSTEM = AmigaOS4
 STATIC_LIB = libIrrlicht.a
-LIB_PATH = ../../lib/$(SYSTEM)
+
+##### check for AmigaOS4 native and for cross-compiler
+ifneq ($(shell uname), AmigaOS)
+	MAKEDIR = mkdir -p
+	LIB_PATH = ../../lib/$(SYSTEM)
+	COPY = cp
+else
+	MAKEDIR = makedir FORCE
+	LIB_PATH = //lib/$(SYSTEM)
+	COPY = copy
+endif
 
 
 ####################
@@ -87,8 +95,8 @@ $(STATIC_LIB): $(LINKOBJ)
 
 # Copies static lib into lib/AmigaOS4
 staticlib staticlib_osx: $(STATIC_LIB)
-	mkdir -p $(LIB_PATH)
-	cp $^ $(LIB_PATH)
+	$(MAKEDIR) $(LIB_PATH)
+	$(COPY) $^ $(LIB_PATH)
 
 TAGS:
 	ctags *.cpp ../../include/*.h *.h
@@ -115,4 +123,4 @@ clean:
 	$(RM) $(LINKOBJ) $(STATIC_LIB) $(LINKOBJ:.o=.d)
 
 .PHONY: all staticlib clean
-
+ 
