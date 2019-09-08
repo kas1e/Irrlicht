@@ -125,13 +125,6 @@ typedef double				f64;
 #define snprintf _snprintf
 #endif
 
-//! Define for swprinf() realisation (by Salas00) on amigaos4
-#ifdef __amigaos4__
-int swprintf(wchar_t *buf, size_t n,const wchar_t *fmt, ...);
-#endif
-
-
-
 // define the wchar_t type if not already built in.
 #ifdef _MSC_VER
 #ifndef _WCHAR_T_DEFINED
@@ -148,6 +141,13 @@ typedef unsigned short wchar_t;
 #endif // wchar is not defined
 #endif // microsoft compiler
 #endif // _IRR_WINDOWS_API_
+
+
+//! Define for swprintf() realisation (by Salas00) on amigaos4
+#ifdef __amigaos4__
+int swprintf(wchar_t *buf, size_t n,const wchar_t *fmt, ...);
+#endif
+
 
 namespace irr
 {
