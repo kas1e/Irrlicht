@@ -982,6 +982,15 @@ bool CFileSystem::existFile(const io::path& filename) const
     #else
         return (_access(filename.c_str(), 0) != -1);
     #endif
+#elif defined(__amigaos4__)
+//! acecess() behave differently on amigaos4/newlib, so go for oldschool way
+	FILE* f = fopen(filename.c_str(), "rb");
+	if (f) 
+	{
+		fclose(f);
+		return true;
+	}
+	return false;
 #elif defined(F_OK)
     #if defined(_IRR_WCHAR_FILESYSTEM)
         return (_waccess(filename.c_str(), F_OK) != -1);
