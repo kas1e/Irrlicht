@@ -54,7 +54,7 @@ namespace video
 		bool changeRenderContext(const SExposedVideoData& videoData, CIrrDeviceLinux* device);
 		#endif
 
-		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+		#if defined (_IRR_COMPILE_WITH_SDL_DEVICE_) || defined (_IRR_COMPILE_WITH_SDL2_DEVICE_)
 		COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device);
 		#endif
 
@@ -594,7 +594,7 @@ namespace video
 		#ifdef _IRR_COMPILE_WITH_OSX_DEVICE_
 			CIrrDeviceMacOSX *OSXDevice;
 		#endif
-		#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+		#if defined (_IRR_COMPILE_WITH_SDL_DEVICE_) || defined (_IRR_COMPILE_WITH_SDL2_DEVICE_)
 			CIrrDeviceSDL *SDLDevice;
 		#endif
 		#ifdef _IRR_COMPILE_WITH_CG_

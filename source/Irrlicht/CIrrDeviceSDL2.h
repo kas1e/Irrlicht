@@ -179,6 +179,12 @@ namespace irr
 			core::position2d<s32> CursorPos;
 			bool IsVisible;
 		};
+	public:
+	
+		SDL_GLContext glContext;
+		SDL_Window* ScreenWindow;
+		SDL_Texture* ScreenTexture;
+		SDL_Renderer* ScreenRenderer;
 
 	private:
 
@@ -187,9 +193,6 @@ namespace irr
 
 		bool createWindow();
 
-		SDL_Window* ScreenWindow;
-		SDL_Texture* ScreenTexture;
-		SDL_Renderer* ScreenRenderer;
 		bool Fullscreen;
 
 #if defined(_IRR_COMPILE_WITH_JOYSTICK_EVENTS_)

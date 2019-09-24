@@ -26,6 +26,12 @@
 #endif
 
 
+#ifdef _IRR_COMPILE_WITH_SDL2_DEVICE_
+#include <SDL2/SDL.h>
+#include "CIrrDeviceSDL2.h"
+#endif
+
+
 namespace irr
 {
 namespace video
@@ -591,11 +597,10 @@ bool COpenGLDriver::initDriver(CIrrDeviceLinux* device)
 // -----------------------------------------------------------------------
 // SDL CONSTRUCTOR
 // -----------------------------------------------------------------------
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+#if defined (_IRR_COMPILE_WITH_SDL_DEVICE_) || defined (_IRR_COMPILE_WITH_SDL2_DEVICE_)
 //! SDL constructor and init code
-COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
-		io::IFileSystem* io, CIrrDeviceSDL* device)
-: CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
+COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params, io::IFileSystem* io, CIrrDeviceSDL* device)
+	: CNullDriver(io, params.WindowSize), COpenGLExtensionHandler(),
 	CurrentRenderMode(ERM_NONE), ResetRenderStates(true),
 	Transformation3DChanged(true), AntiAlias(params.AntiAlias),
 	RenderTargetTexture(0), CurrentRendertargetSize(0,0), ColorFormat(ECF_R8G8B8),
@@ -613,7 +618,7 @@ COpenGLDriver::COpenGLDriver(const SIrrlichtCreationParameters& params,
 	genericDriverInit();
 }
 
-#endif // _IRR_COMPILE_WITH_SDL_DEVICE_
+#endif // _IRR_COMPILE_WITH_SDL_DEVICE_  || _IRR_COMPILE_WITH_SDL2_DEVICE_
 
 
 //! destructor
@@ -861,6 +866,15 @@ bool COpenGLDriver::endScene()
 	}
 #endif
 
+#ifdef _IRR_COMPILE_WITH_SDL2_DEVICE_
+	if (DeviceType == EIDT_SDL)
+	{
+		SDL_GL_SwapWindow(SDLDevice->ScreenWindow);
+		return true;
+	}
+#endif
+
+
 	// todo: console device present
 
 	return false;
@@ -918,7 +932,7 @@ bool COpenGLDriver::beginScene(bool backBuffer, bool zBuffer, SColor color,
 		break;
 	}
 
-#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_)
+#if defined(_IRR_COMPILE_WITH_SDL_DEVICE_) || defined(_IRR_COMPILE_WITH_SDL2_DEVICE_)
 	if (DeviceType == EIDT_SDL)
 	{
 		// todo: SDL sets glFrontFace(GL_CCW) after driver creation,
@@ -4814,7 +4828,7 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 // -----------------------------------
 // SDL VERSION
 // -----------------------------------
-#ifdef _IRR_COMPILE_WITH_SDL_DEVICE_
+#if defined (_IRR_COMPILE_WITH_SDL_DEVICE_) || defined (_IRR_COMPILE_WITH_SDL2_DEVICE_)
 IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 		io::IFileSystem* io, CIrrDeviceSDL* device)
 {
@@ -4824,7 +4838,7 @@ IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
 	return 0;
 #endif //  _IRR_COMPILE_WITH_OPENGL_
 }
-#endif // _IRR_COMPILE_WITH_SDL_DEVICE_
+#endif // _IRR_COMPILE_WITH_SDL_DEVICE_ || IRR_COMPILE_WITH_SDL2_DEVICE_
 
 } // end namespace
 } // end namespace

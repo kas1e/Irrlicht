@@ -23,6 +23,21 @@
 
 namespace irr
 {
+	namespace video
+	{
+
+		#ifdef _IRR_COMPILE_WITH_OPENGL_
+		IVideoDriver* createOpenGLDriver(const SIrrlichtCreationParameters& params,
+				io::IFileSystem* io, CIrrDeviceSDL* device);
+		#endif
+	} // end namespace video
+
+} // end namespace irr
+
+
+
+namespace irr
+{
 	
 //! constructor
 CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
@@ -68,13 +83,34 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 //! destructor
 CIrrDeviceSDL::~CIrrDeviceSDL()
 {	
-	if (ScreenTexture) 
-    { 
-        SDL_DestroyTexture(ScreenTexture); 
-        ScreenTexture = NULL; 
-    } 
-	SDL_DestroyRenderer(ScreenRenderer);
-	SDL_DestroyWindow(ScreenWindow);
+
+	if (CreationParams.DriverType == video::EDT_OPENGL)
+	{
+		if(glContext)
+		{
+			SDL_GL_DeleteContext(glContext);
+			glContext = NULL;
+		}
+	} else {
+		
+		if (ScreenTexture) 
+		{ 
+			SDL_DestroyTexture(ScreenTexture); 
+			ScreenTexture = NULL; 
+		} 
+	
+		if (ScreenRenderer)
+		{
+			SDL_DestroyRenderer(ScreenRenderer);
+			ScreenRenderer = NULL;
+		}
+	}
+	
+	if(ScreenWindow)
+	{
+		SDL_DestroyWindow(ScreenWindow);
+		ScreenWindow = NULL;
+	}
 
 	SDL_Quit();
 
@@ -85,13 +121,21 @@ bool CIrrDeviceSDL::createWindow()
 {
 	if ( Close )
 		return false;
-
-	int flags = 0;//SDL_WINDOW_FULLSCREEN;
-	ScreenWindow = SDL_CreateWindow("Untitled", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Width, Height, flags);
-	ScreenRenderer = SDL_CreateRenderer(ScreenWindow, -1, 0);//SDL_RENDERER_ACCELERATED);
-	ScreenTexture = SDL_CreateTexture(ScreenRenderer, SDL_PIXELFORMAT_ARGB1555, SDL_TEXTUREACCESS_STREAMING, Width, Height);
 	
-
+	if (CreationParams.DriverType == video::EDT_OPENGL)
+	{
+		int flags = SDL_WINDOW_OPENGL;
+		ScreenWindow = SDL_CreateWindow( "SDLIrrlicht", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Width,Height, flags );
+		glContext = SDL_GL_CreateContext(ScreenWindow);
+	}
+	
+	else 
+	{
+		int flags = 0;//SDL_WINDOW_FULLSCREEN;
+		ScreenWindow = SDL_CreateWindow("SDLIrrlicht", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Width, Height, flags);
+		ScreenRenderer = SDL_CreateRenderer(ScreenWindow, -1, 0);//SDL_RENDERER_ACCELERATED);
+		ScreenTexture = SDL_CreateTexture(ScreenRenderer, SDL_PIXELFORMAT_ARGB1555, SDL_TEXTUREACCESS_STREAMING, Width, Height);
+	}	
 
 	return true;
 }
@@ -110,11 +154,30 @@ void CIrrDeviceSDL::createDriver()
 		#endif
 		break;
 
+	case video::EDT_BURNINGSVIDEO:
+		#ifdef _IRR_COMPILE_WITH_BURNINGSVIDEO_
+		VideoDriver = video::createBurningVideoDriver(CreationParams, FileSystem, this);
+		#else
+		os::Printer::log("Burning's video driver was not compiled in.", ELL_ERROR);
+		#endif
+		break;
+
+	case video::EDT_OPENGL:
+		#ifdef _IRR_COMPILE_WITH_OPENGL_
+		VideoDriver = video::createOpenGLDriver(CreationParams, FileSystem, this);
+		#else
+		os::Printer::log("No OpenGL support compiled in.", ELL_ERROR);
+		#endif
+		break;
+
+	case video::EDT_NULL:
+		VideoDriver = video::createNullDriver(FileSystem, CreationParams.WindowSize);
+		break;
+
 	default:
 		os::Printer::log("Unable to create video driver of unknown type.", ELL_ERROR);
 		break;
 	}
-
 }
 
 
@@ -211,16 +274,20 @@ void CIrrDeviceSDL::setWindowCaption(const wchar_t* text)
 //! presents a surface in the client area
 bool CIrrDeviceSDL::present(video::IImage* surface, void* windowId, core::rect<s32>* srcClip)
 {
-
-	if (SDL_UpdateTexture(ScreenTexture, NULL /* update whole texture */, surface->lock(), surface->getPitch()) != 0) { 
-		// SDL_GetError 
-	} 
+	if (CreationParams.DriverType == video::EDT_OPENGL) {
+		//..
+	} else { 
+	// software rendering
+	
+		if (SDL_UpdateTexture(ScreenTexture, NULL /* update whole texture */, surface->lock(), surface->getPitch()) != 0) { 
+			// SDL_GetError 
+		} 
      
-	if (SDL_RenderCopy(ScreenRenderer, ScreenTexture, NULL, NULL) != 0) { 
-		// SDL_GetError 
-	} 
-	SDL_RenderPresent(ScreenRenderer); 
-
+		if (SDL_RenderCopy(ScreenRenderer, ScreenTexture, NULL, NULL) != 0) { 
+			// SDL_GetError 
+		} 
+		SDL_RenderPresent(ScreenRenderer);
+	}
 				
 	return true;
 }
