@@ -710,7 +710,7 @@ video::IVideoModeList* CIrrDeviceSDL::getVideoModeList()
 	{
 		// enumerate video modes.
 		const SDL_VideoInfo *vi = SDL_GetVideoInfo();
-		SDL_Rect **modes = SDL_ListModes(vi->vfmt, SDL_Flags);
+		SDL_Rect **modes = SDL_ListModes(vi->vfmt, SDL_Flags|SDL_FULLSCREEN);
 		if (modes != 0)
 		{
 			if (modes == (SDL_Rect **)-1)
