@@ -2,7 +2,7 @@
 # It's usually sufficient to change just the target name and source file list
 # and be sure that CXX is set to a valid compiler
 Target = 21.Quake3Explorer
-Sources = main.cpp
+Sources = main.cpp q3factory.cpp sound.cpp
 BinPath = ../../bin/AmigaOS4
 
 # general compiler settings
