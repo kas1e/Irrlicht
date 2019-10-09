@@ -13,12 +13,12 @@ CXXFLAGS = -O3 -ffast-math
 
 # by default we build for SDL1 , if do "make -f Makefile.amigaos4 SDL2=1", it will build with SDL2.
 ifndef SDL2
-SDLLIB = -lSDL_gl4es
+SDLLIBS = -lSDL_mixer -lmikmod -lmodplug -lflac -lsmpeg -lvorbisfile -lvorbis -logg -lSDL_gl4es
 else
-SDLLIB = -lSDL2_gl4es
+SDLLIBS = -lSDL2_gl4es
 endif
 
-LDFLAGS = -athread=native ../../lib/AmigaOS4/libIrrlicht.a $(SDLLIB) -lgl4es -lpthread -lunix
+LDFLAGS = -athread=native ../../lib/AmigaOS4/libIrrlicht.a $(SDLLIBS) -lgl4es -lpthread -lunix
 
 # name of the binary
 DESTPATH = $(BinPath)/$(Target)
