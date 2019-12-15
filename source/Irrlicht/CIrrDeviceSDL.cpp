@@ -20,6 +20,12 @@
 #include <SDL/SDL_syswm.h>
 #include <SDL/SDL_video.h>
 
+#ifdef __amigaos4__
+#include <proto/exec.h>
+#include <proto/intuition.h>
+#include <proto/graphics.h>
+#endif
+
 #ifdef _MSC_VER
 #pragma comment(lib, "SDL.lib")
 #endif // _MSC_VER
@@ -98,6 +104,40 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 
 	Operator = new COSOperator(sdlversion);
 	os::Printer::log(sdlversion.c_str(), ELL_INFORMATION);
+
+#ifdef __amigaos4__
+// to make getDesktopDepth() and getDesktopResolution() works when use SDL renderer.
+
+	struct IntuitionIFace *IIntuition = NULL;
+	struct GraphicsIFace  *IGraphics = NULL;
+	struct Screen *pub_screen = NULL;
+	int screenWidth = 0; int screenHeight = 0; int screenDepth = 0;
+	
+	struct Library *GfxBase = IExec->OpenLibrary("graphics.library", 50);
+	IGraphics = (struct GraphicsIFace*)IExec->GetInterface(GfxBase, "main", 1, NULL);
+ 
+	struct Library *IntuitionBase = IExec->OpenLibrary("intuition.library", 50);
+	IIntuition = (struct IntuitionIFace*)IExec->GetInterface(IntuitionBase, "main", 1, NULL);
+	
+	if (NULL != IIntuition)
+	{
+		if(NULL != (pub_screen = IIntuition->LockPubScreen(NULL)))
+		{			
+			screenWidth = pub_screen->Width;
+			screenHeight = pub_screen->Height;
+			screenDepth = IGraphics->GetBitMapAttr(pub_screen->RastPort.BitMap, BMA_DEPTH);
+			IIntuition->UnlockPubScreen(NULL, pub_screen);
+		}
+	}
+	
+	IExec->DropInterface((struct Interface*)IGraphics);
+	IExec->CloseLibrary(GfxBase);
+
+	IExec->DropInterface((struct Interface*)IIntuition);
+	IExec->CloseLibrary(IntuitionBase);
+
+	VideoModeList->setDesktop(screenDepth, core::dimension2d<u32>(screenWidth,screenHeight));
+#endif
 
 	// create keymap
 	createKeyMap();
