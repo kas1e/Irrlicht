@@ -209,7 +209,7 @@ int main()
 	node->setTriangleSelector(selector);
 	selector->drop();
 
-
+#ifndef __amigaos4__ // HalfLife loader (.mdl files ) is the last non-big endian and non-alignment aware loader, so disable it until fixed
 	// And this mdl file uses skinned skeletal animation.
 	node = smgr->addAnimatedMeshSceneNode(smgr->getMesh("../../media/yodan.mdl"),
 						0, IDFlag_IsPickable | IDFlag_IsHighlightable);
@@ -222,6 +222,7 @@ int main()
 	selector = smgr->createTriangleSelector(node);
 	node->setTriangleSelector(selector);
 	selector->drop();
+#endif
 
 	material.setTexture(0, 0);
 	material.Lighting = false;
