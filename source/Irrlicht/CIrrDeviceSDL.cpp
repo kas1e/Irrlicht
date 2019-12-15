@@ -484,8 +484,8 @@ bool CIrrDeviceSDL::run()
 
 		case SDL_USEREVENT:
 			irrevent.EventType = irr::EET_USER_EVENT;
-			irrevent.UserEvent.UserData1 = *(reinterpret_cast<s32*>(&SDL_event.user.data1));
-			irrevent.UserEvent.UserData2 = *(reinterpret_cast<s32*>(&SDL_event.user.data2));
+			irrevent.UserEvent.UserData1 = reinterpret_cast<uintptr_t>(SDL_event.user.data1);
+			irrevent.UserEvent.UserData2 = reinterpret_cast<uintptr_t>(SDL_event.user.data2);
 
 			postEventFromUser(irrevent);
 			break;
