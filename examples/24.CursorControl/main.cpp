@@ -421,7 +421,15 @@ int main()
 	if (driverType==video::EDT_COUNT)
 		return 1;
 
-	IrrlichtDevice * device = createDevice(driverType, dimension2d<u32>(640, 480));
+	//IrrlichtDevice * device = createDevice(driverType, dimension2d<u32>(640, 480));
+	irr::SIrrlichtCreationParameters params;
+
+	params.DriverType=driverType;
+	params.WindowSize=core::dimension2d<u32>(640, 480);
+	params.WindowResizable=true;
+
+	IrrlichtDevice * device = createDeviceEx(params);
+	
 	if (device == 0)
 		return 1; // could not create selected driver.
 

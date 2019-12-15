@@ -735,8 +735,20 @@ int main(int argc, char* argv[])
 
 	// create device and exit if creation failed
 	MyEventReceiver receiver;
-	Device = createDevice(driverType, core::dimension2d<u32>(800, 600),
-		16, false, false, false, &receiver);
+	
+	//Device = createDevice(driverType, core::dimension2d<u32>(800, 600), 16, false, false, false, &receiver);	
+	irr::SIrrlichtCreationParameters params;
+	
+	params.DriverType=driverType;
+	params.WindowSize=core::dimension2d<u32>(800, 600);
+	params.Bits = 16;
+	params.Fullscreen=false;
+	params.Stencilbuffer=false;
+	params.Vsync=false;
+	params.WindowResizable=true;
+	params.EventReceiver = &receiver;
+
+	Device = createDeviceEx(params);
 
 	if (Device == 0)
 		return 1; // could not create selected driver.

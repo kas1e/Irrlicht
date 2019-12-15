@@ -57,7 +57,7 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 	Screen((SDL_Surface*)param.WindowId), SDL_Flags(SDL_ANYFORMAT),
 	MouseX(0), MouseY(0), MouseButtonStates(0),
 	Width(param.WindowSize.Width), Height(param.WindowSize.Height),
-	Resizable(false), WindowHasFocus(false), WindowMinimized(false)
+	Resizable(param.WindowResizable), WindowHasFocus(false), WindowMinimized(false)
 {
 	#ifdef _DEBUG
 	setDebugName("CIrrDeviceSDL");
@@ -108,6 +108,8 @@ CIrrDeviceSDL::CIrrDeviceSDL(const SIrrlichtCreationParameters& param)
 
 	if ( CreationParams.Fullscreen )
 		SDL_Flags |= SDL_FULLSCREEN;
+	else if ( Resizable )
+		SDL_Flags |= SDL_RESIZABLE;
 	if (CreationParams.DriverType == video::EDT_OPENGL)
 		SDL_Flags |= SDL_OPENGL;
 	else if (CreationParams.Doublebuffer)
