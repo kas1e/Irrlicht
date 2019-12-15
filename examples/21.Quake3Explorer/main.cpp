@@ -86,7 +86,11 @@ void GameData::setDefault ()
 	deviceParam.WindowSize.Width = 800;
 	deviceParam.WindowSize.Height = 600;
 	deviceParam.Fullscreen = false;
+	#ifdef __amigaos4__
+	deviceParam.Bits = 32;
+	#else
 	deviceParam.Bits = 24;
+	#endif
 	deviceParam.ZBufferBits = 16;
 	deviceParam.Vsync = false;
 	deviceParam.AntiAlias = false;
@@ -112,7 +116,9 @@ void GameData::setDefault ()
 
 	// Add the original quake3 files before you load your custom map
 	// Most mods are using the original shaders, models&items&weapons
+	#ifndef __amigaos4__
 	CurrentArchiveList.push_back("/q/baseq3/");
+	#endif
 
 	CurrentArchiveList.push_back(StartupDir + "../../media/map-20kdm2.pk3");
 }
