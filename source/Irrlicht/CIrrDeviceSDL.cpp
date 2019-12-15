@@ -712,15 +712,34 @@ video::IVideoModeList* CIrrDeviceSDL::getVideoModeList()
 	{
 		// enumerate video modes.
 		const SDL_VideoInfo *vi = SDL_GetVideoInfo();
-		SDL_Rect **modes = SDL_ListModes(vi->vfmt, SDL_Flags|SDL_FULLSCREEN);
-		if (modes != 0)
+
+		SDL_PixelFormat pixelFormat = *(vi->vfmt);
+
+		core::array<Uint8> checkBitsPerPixel;
+		checkBitsPerPixel.push_back(8);
+		checkBitsPerPixel.push_back(16);
+		checkBitsPerPixel.push_back(24);
+		checkBitsPerPixel.push_back(32);
+		if ( pixelFormat.BitsPerPixel > 32 )
+			checkBitsPerPixel.push_back(pixelFormat.BitsPerPixel);
+
+		for ( u32 i=0; i<checkBitsPerPixel.size(); ++i)
 		{
-			if (modes == (SDL_Rect **)-1)
-				os::Printer::log("All modes available.\n");
-			else
+			pixelFormat.BitsPerPixel = checkBitsPerPixel[i];
+			SDL_Rect **modes = SDL_ListModes(&pixelFormat, SDL_Flags|SDL_FULLSCREEN);
+			if (modes != 0)
 			{
-				for (u32 i=0; modes[i]; ++i)
-					VideoModeList->addMode(core::dimension2d<u32>(modes[i]->w, modes[i]->h), vi->vfmt->BitsPerPixel);
+				if (modes == (SDL_Rect **)-1)
+				{
+					core::stringc strLog("All modes available for bit-depth ");
+					strLog += core::stringc(pixelFormat.BitsPerPixel);
+					os::Printer::log(strLog.c_str());
+				}
+				else
+				{
+					for (u32 i=0; modes[i]; ++i)
+						VideoModeList->addMode(core::dimension2d<u32>(modes[i]->w, modes[i]->h), vi->vfmt->BitsPerPixel);
+				}
 			}
 		}
 	}
