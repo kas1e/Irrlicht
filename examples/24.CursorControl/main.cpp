@@ -434,7 +434,8 @@ int main()
 		return 1; // could not create selected driver.
 
 	// It's sometimes of interest to know how the mouse behaves after a resize
-	device->setResizable(true);
+	// we don't need setResizable() anymore, as for now we set WindowResizable param when create device.
+	// device->setResizable(true);
 
 	device->setWindowCaption(L"Cursor control - Irrlicht engine tutorial");
 	video::IVideoDriver* driver = device->getVideoDriver();

@@ -753,7 +753,8 @@ int main(int argc, char* argv[])
 	if (Device == 0)
 		return 1; // could not create selected driver.
 
-	Device->setResizable(true);
+	//we don't need setResizable() anymore, as for now we set WindowResizable param when create device.
+	//Device->setResizable(true);
 
 	Device->setWindowCaption(L"Irrlicht Engine - Loading...");
 

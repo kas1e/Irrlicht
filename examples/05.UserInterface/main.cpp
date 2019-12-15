@@ -200,7 +200,9 @@ int main()
 		store pointers to the driver and to the gui environment. */
 
 	device->setWindowCaption(L"Irrlicht Engine - User Interface Demo");
-	device->setResizable(true);
+
+	//we don't need setResizable() anymore, as for now we set WindowResizable param when create device.
+	//device->setResizable(true);
 
 	video::IVideoDriver* driver = device->getVideoDriver();
 	IGUIEnvironment* env = device->getGUIEnvironment();
